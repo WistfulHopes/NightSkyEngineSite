@@ -1,4 +1,4 @@
-baseURL = "http://www.example.com"
+baseURL = "https://wistfulhopes.github.io/NightSkyEngineSite/"
 title = "Night Sky Engine"
 theme = "hugo-coder"
 languageCode = "en"
