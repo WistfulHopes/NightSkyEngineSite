@@ -26,4 +26,4 @@ AFter Visual Studio is set up, you will need to generate Visual Studio project f
 
 After doing so, there will be a new file in the folder, "FighterEngine.sln". Open it, and once Visual Studio has loaded, press Ctrl+B to compile the engine.
 
-From here, read the Quick Start guide.
+From here, read the [Quick Start Guide]({{< ref "/quick-start" >}} ).

@@ -125,7 +125,7 @@ weight = 1
 url = "download/"
 
 [[languages.en.menu.main]]
-name = "Quick Start"
+name = "Quick Start Guide"
 weight = 1
 url = "quick-start/"
 

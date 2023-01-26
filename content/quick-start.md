@@ -1,5 +1,5 @@
 ---
-title: "Quick Start"
+title: "Quick Start Guide"
 date: 2023-01-26T01:04:19-08:00
 ---
 
