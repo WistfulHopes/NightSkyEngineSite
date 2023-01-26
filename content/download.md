@@ -1,5 +1,4 @@
 +++ 
-draft = true
 date = 2023-01-26T00:02:59-08:00
 title = "Download"
 description = "Download and compile Night Sky Engine"

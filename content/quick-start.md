@@ -1,7 +1,6 @@
 ---
 title: "Quick Start"
 date: 2023-01-26T01:04:19-08:00
-draft: true
 ---
 
 ## Creating a character

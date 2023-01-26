@@ -1,7 +1,6 @@
 ---
 title: "Battle Actor"
 date: 2023-01-26T01:24:39-08:00
-draft: true
 ---
 
 This page will document all blueprint accessible properties and functions of battle actors. Battle actors are any gameplay-affecting object that is not a player (such as projectiles), and is the base class for player characters.
