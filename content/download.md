@@ -12,10 +12,9 @@ series = []
 
 # Download
 
-To get Night Sky Engine, use a Git client, such as [the official client](https://git-scm.com/), or [Github Desktop](https://desktop.github.com/), and clone the Night Sky Engine repository at https://github.com/WistfulHopes/NightSkyEngine.git. If using the command line, type in 
-{
+To get Night Sky Engine, use a Git client, such as [the official client](https://git-scm.com/), or [Github Desktop](https://desktop.github.com/), and clone the Night Sky Engine repository at https://github.com/WistfulHopes/NightSkyEngine.git. If using the command line, type in the following:
+
     git clone https://github.com/WistfulHopes/NightSkyEngine.git
-}.
 
 # Compile the engine
 
