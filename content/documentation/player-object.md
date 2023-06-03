@@ -1,6 +1,5 @@
 ---
 title: "Player Character"
-date: 2023-01-26T01:24:44-08:00
 ---
 
 # UNDERGOING REWRITE

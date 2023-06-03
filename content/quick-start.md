@@ -1,6 +1,5 @@
 ---
 title: "Quick Start Guide"
-date: 2023-01-26T01:04:19-08:00
 ---
 
 ## Creating a character
@@ -81,94 +80,103 @@ You may now assign the Anim Blueprint to the mesh in your pawn.
 
 For a basic rundown on Paper2D, [read the Unreal Engine Paper2D documentation.](https://docs.unrealengine.com/5.2/en-US/paper-2d-in-unreal-engine/)
 
+After creating a flipbook, make a Flipbook Data asset.
+
 {{< rawhtml >}}
-<img src="..\images\quick-start\paper2d.png" alt="Paper2D Settings" style="width:400px;"/>
+<img src="..\images\quick-start\flipbook-data.png" alt="Create Flipbook Data" style="width:600px;"/>
 {{< /rawhtml >}}
 
-# EVERYTHING BELOW HAS NOT BEEN REWRITTEN YET. PLEASE BE PATIENT. 
+Assign flipbooks to it the same way you would 3D animations.
 
-Now, navigate to your blueprint, and under Class Defaults, add an element to Flipbook Data for each of your character's flipbooks.
+Now, navigate to your blueprint, and under Class Defaults, set the Flipbook Data variable.
 
 {{< rawhtml >}}
-<img src="..\images\quick-start\flipbook-data.png" alt="Set Flipbook Data" style="width:400px;"/>
+<img src="..\images\quick-start\set-flipbook-data.png" alt="Set Flipbook Data" style="width:720px;"/>
 {{< /rawhtml >}}
 
 ## Coding the state
 
 Now that animations have been taken care of, let's get back to working on the Stand state.
 
-From Event On Enter, create a new node to Get the variable named Parent. This is a reference to the character blueprint. Using this reference, you may use any blueprint-exposed variable or function.
+From Parent: Exec, drag off the execution pin and add a new macro node called "Label Gate". This node lets you set "labels" in your state that you can return to later in the state. This is useful for looping animations, for example.
 
-For now, drag off the Parent node, and make a node for the function "Set Cel Name". This sets the internal cel name, which is used to grab the correct frame for collision and animations. The notation for this is (animation name)_XX, where XX is the key frame number. For sprite and 3D ArcSystemWorks characters, this will also seek to the correct frame of the animation. For standard 3D characters, this will only set the correct animation. Standard 3D characters will increment their animation by one frame every update.
+{{< rawhtml >}}
+<img src="..\images\quick-start\label-gate.png" alt="Create Label Gate" style="width:800px;"/>
+{{< /rawhtml >}}
+
+Under Label Gate, you'll see a property named "Name". Set this to whatever you want, but I prefer "loop" for looping animations.
+
+Then, drag off the Label Gate node, but this time, create a macro node named "Cel Gate".
+
+{{< rawhtml >}}
+<img src="..\images\quick-start\cel-gate.png" alt="Create Cel Gate" style="width:600px;"/>
+{{< /rawhtml >}}
+
+This node creates what I call a "cel", named after animation cels. The first cel in a state activates immediately, running the code from Exec. After that, no cels in the state will execute until the duration of the current cel elapses. When this occurs, the next cel connected to Skip will activate, and so on.
+
+This is all well and good, but we haven't added anything to actually affect the state yet! So now, right click in the Event Graph and Get the Parent variable. Make sure this is the one under the category "Variables->States", and not a function!
+
+{{< rawhtml >}}
+<img src="..\images\quick-start\get-parent.png" alt="Get Parent" style="width:400px;"/>
+{{< /rawhtml >}}
+
+The Parent variable is a link to the Battle Object that currently owns the state. For states like Stand, this links to the player.
+
+Drag off from the Parent variable and create a function node called "Set Cel Name".
 
 {{< rawhtml >}}
 <img src="..\images\quick-start\cel-name.png" alt="Set Cel Name" style="width:500px;"/>
 {{< /rawhtml >}}
 
-Now, from Event On Update, create a node sequence like this: 
+The Cel Name links directly to a Collision Data asset, grabbing the correct set of hurt/hitboxes, the animation to use, and the frame of the animation to use. More on that later.
+
+Repeat creating Cel Gates and Cel Names like this until you are done with your state. 
+
+Once the last frame of the state is reached, there are three mains options:
+
+A. Exit the state. From the Skip execution pin on the last cel gate, drag off and create an "Exit State" macro. Depending on the current character stance (standing, crouching, jumping), this will jump to the corresponding state.
 
 {{< rawhtml >}}
-<img src="..\images\quick-start\update.png" alt="Update Function" style="width:900px;"/>
+<img src="..\images\quick-start\exit-state.png" alt="Exit State" style="width:500px;"/>
 {{< /rawhtml >}}
 
-Let me break down what's going on here:
-
-This is used to get the current frame of the state. When plugged into a Branch node, you may use it to execute code only on a specific frame.
+B. Jump to another state. Create a new Cel Gate with a duration of 1. From the Parent node, drag off and get the "Player" variable. This allows you to access any player-specific functions. Then, drag off from the Player node and create the function node "Jump to State". This node leaves the current state and goes to the specified state.
 
 {{< rawhtml >}}
-<img src="..\images\quick-start\on-frame.png" alt="Is on Frame" style="width:400px;"/>
+<img src="..\images\quick-start\jump-to-state.png" alt="Jump to State" style="width:720px;"/>
 {{< /rawhtml >}}
 
-Is on Frame is a shortcut to compare the value of "Anim Time" against the provided frame number. Anim Time is incremented every frame by the engine, and resets when changing states. It may also be manually changed within the state in order to jump to different parts of the state.
-
-Finally, we set the Cel Name if on the correct frame. This lets us update the animation frame and collision frame at the right time.
-
-This process should repeated for each frame of the animation for sprite and 3D ArcSystemWorks characters, or for every hitbox update for standard 3D characters. 
-
-Once the last frame of the animation is reached, there are two options:
-
-A. Jump to a different state. From the Parent node, create a Jump to State node. New Name should be set to the name of the new state.
+C. Go to a label. Create a new Cel Gate with a duration of 1. From the Parent node, drag off and create the function node "Goto Label". If a label with the specified name was placed somewhere else in the state, this will goto that label, automatically activating the next cel gate. This is important for looping animations. 
 
 {{< rawhtml >}}
-<img src="..\images\quick-start\jump-to-state.png" alt="Jump to State" style="width:600px;"/>
+<img src="..\images\quick-start\jump-to-state.png" alt="Goto Label" style="width:500px;"/>
 {{< /rawhtml >}}
 
-B. Set the Anim Time to jump backwards in the state. From the Parent node, create a Set Anim Time node. Set this to one frame _before_ the frame you wish to jump to. This is useful for looping animations, such as standing, crouching, or walking. For 3D characters, you will also want to set the Anim BP Time to the proper frame of the animation; otherwise, the animation will pause at the last frame.
-
+For the Stand state, you'll want to go to the label "loop" (or whatever you called it). 
 
 ## Create State Data Asset
 
-Now that the Stand state has been completed, you need to assign the State to the pawn. To do this, you must create a State Data Asset.
+Now that the Stand state has been completed, you need to assign the State to the pawn. To do this, you must create a State Data asset.
 
-Create a Data Asset like with the animations... but this time, use a base class of State Data Asset. Add an element to the State Array, and assign your Stand state to here. Make sure to not accidentally assign the base Stand state, or another character's Stand state!
+Create a Data Asset like with the animations, but this time, use a base class of State Data asset. Add an element to the State Array, and assign your Stand state to here. Make sure to not accidentally assign the base Stand state, or another character's Stand state!
 
-Now, open your character blueprint. Under Class Defaults, assign your character's State Data Asset to the value named "State Data Asset".
-
-{{< rawhtml >}}
-<img src="..\images\quick-start\state-data.png" alt="State Data Asset" style="width:1280px;"/>
-{{< /rawhtml >}}
+Now, open your character blueprint. Under Class Defaults, assign your character's State Data asset to the value named "Chara State Data".
 
 # Add to character select
 
 Now you have a character that can animate! They're not very complete, but this is just a quick start guide.
 
-...However, you won't be able to use them unless you add them to the character select screen! To do so, navigate to Content/UI/CharaSelect.
+However, you won't be able to use them unless you add them to the character select screen. To do so, navigate to Content/Blueprints/CharaSelect.
 
-Open CharaSelectData, and add a new entry to Chara Datas. Put the character name here, and assign the correct blueprint to Player Class. The Chara Texture will be used to give an icon to the character select button.
-
-{{< rawhtml >}}
-<img src="..\images\quick-start\cselect-data.png" alt="CharaSelectData" style="width:1280px;"/>
-{{< /rawhtml >}}
-
-Now, open W_CSelectLocal, and copy-paste one of the character select buttons and put it somewhere. No need to modify it in any way, it will automatically be assigned the correct data.
+Open DA_CharaSelect, and add a new entry to Chara Select Structs. Put the character name here, and assign the correct blueprint to Player Class. The Chara Texture will be used to give an icon to the character select button.
 
 {{< rawhtml >}}
-<img src="..\images\quick-start\cselect.png" alt="Character Select" style="width:1280px;"/>
+<img src="..\images\quick-start\cselect-data.png" alt="Chara Select Data" style="width:1280px;"/>
 {{< /rawhtml >}}
 
 ## Test it out
 
-Now that everything is set up, you may run the game in-editor. Select your characters (one per side), select a stage, and then select LocalPlay. If everything went right, you should see the characters standing on each side in their standing idle!
+Now that everything is set up, you may run the game in-editor. Under Content/Maps, open the "MainMenu_PL" map. Press play, and try either Versus or Training. Select your characters, and have at it!
 
 ## Explore the engine
 

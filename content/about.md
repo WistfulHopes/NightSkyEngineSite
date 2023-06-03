@@ -1,7 +1,6 @@
 +++
 title = "About"
 description = "What is Night Sky Engine?"
-date = "2019-02-28"
 aliases = ["about-us", "about-night-sky", "contact"]
 author = "WistfulHopes"
 +++

@@ -1,6 +1,5 @@
 ---
 title: "Battle Actor"
-date: 2023-01-26T01:24:39-08:00
 ---
 
 # UNDERGOING REWRITE
