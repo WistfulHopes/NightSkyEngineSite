@@ -72,18 +72,14 @@ Now, create an Anim Blueprint. Select the mesh skeleton, and ABP_CommonArcSys as
 Under Class Defaults, set Anim Data to your character's Anim Data asset.
 
 {{< rawhtml >}}
-<img src="..\images\quick-start\animbp-override.png" alt="Override AnimBP Initialize" style="width:800px;"/>
+<img src="..\images\quick-start\animbp-defaults.png" alt="Set AnimBP Defaults" style="width:800px;"/>
 {{< /rawhtml >}}
 
 You may now assign the Anim Blueprint to the mesh in your pawn.
 
-# EVERYTHING BELOW HAS NOT BEEN REWRITTEN YET. PLEASE BE PATIENT.
-
 ### 2D characters
 
-For a basic rundown on Paper2D, [read the Unreal Engine Paper2D documentation.](https://docs.unrealengine.com/4.27/en-US/AnimatingObjects/Paper2D/)
-
-When creating flipbooks for the Night Sky Engine, there are a few extra things that must be done. Set Frames Per Second to 60, and set Frame Run to 5 for each sprite.
+For a basic rundown on Paper2D, [read the Unreal Engine Paper2D documentation.](https://docs.unrealengine.com/5.2/en-US/paper-2d-in-unreal-engine/)
 
 {{< rawhtml >}}
 <img src="..\images\quick-start\paper2d.png" alt="Paper2D Settings" style="width:400px;"/>
