@@ -85,6 +85,8 @@ For a basic rundown on Paper2D, [read the Unreal Engine Paper2D documentation.](
 <img src="..\images\quick-start\paper2d.png" alt="Paper2D Settings" style="width:400px;"/>
 {{< /rawhtml >}}
 
+# EVERYTHING BELOW HAS NOT BEEN REWRITTEN YET. PLEASE BE PATIENT. 
+
 Now, navigate to your blueprint, and under Class Defaults, add an element to Flipbook Data for each of your character's flipbooks.
 
 {{< rawhtml >}}
