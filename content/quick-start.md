@@ -5,13 +5,13 @@ date: 2023-01-26T01:04:19-08:00
 
 ## Creating a character
 
-To create a character, navigate to Content/Blueprints/CharacterBP, and create a new folder for your character. Inside that folder, create a blueprint that inherits either from BP_PlayerCharacter (for 3D characters) or BP_SpritePlayerCharacter (for 2D characters).
+To create a character, navigate to Content/Blueprints/Characters, and create a new folder for your character. Inside that folder, create a blueprint that inherits either from BP_PlayerObject (for 3D characters) or BP_SpritePlayerObject (for 2D characters).
 
 {{< rawhtml >}}
-<img src="..\images\quick-start\create-character.png" alt="Create character blueprint" style="width:1280px;"/>
+<img src="..\images\quick-start\create-character.png" alt="Create character blueprint" style="width:720px;"/>
 {{< /rawhtml >}}
 
-After your character is created, you may assign the mesh (or sprite flipbook) the character uses the same way as any Unreal Engine Actor. For more information, [read the Unreal Engine Actor documentation.](https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/Actors/)
+After your character is created, you may assign the mesh (or sprite flipbook) the character uses the same way as any Unreal Engine Actor. For more information, [read the Unreal Engine Actor documentation.](https://docs.unrealengine.com/5.2/en-US/actors-in-unreal-engine/)
 
 I recommend placing the character assets inside Content/CharacterAssets/(character name). You may look at the included characters for an idea of how to organize the assets.
 
@@ -19,19 +19,19 @@ I recommend placing the character assets inside Content/CharacterAssets/(charact
 
 However, this by itself isn't enough to have a functioning character! You must create a State blueprint, which contains several important parts of your character's code. Within State blueprints, the character's functionality and animations may be implemented.
 
-First, create a States folder within your character's folder. Inside that folder, create a blueprint child of the Stand state.
+First, create a States folder within your character's folder. Inside that folder, create a blueprint child of the ST_CommonStand state.
 
 {{< rawhtml >}}
-<img src="..\images\quick-start\create-state.png" alt="Create state blueprint" style="width:1280px;"/>
+<img src="..\images\quick-start\create-state.png" alt="Create state blueprint" style="width:720px;"/>
 {{< /rawhtml >}}
 
-Name it (character name)_Stand. When you open the file, there won't be any code inside the blueprint. This is where you override functions from the base blueprint. These functions are automatically executed by the engine code under specific conditions.
+Name it ST_(character name)Stand. When you open the file, there won't be any code inside the blueprint. This is where you override functions from the base blueprint. These functions are automatically executed by the engine code under specific conditions.
 
 {{< rawhtml >}}
 <img src="..\images\quick-start\override-function.png" alt="Create state blueprint" style="width:500px;"/>
 {{< /rawhtml >}}
 
-For now, override the On Enter and On Update functions. Right click on the Event nodes and click "Add call to parent function" button. Then, plug the Event function into the corresponding Parent function.
+For now, override the Exec function. Right click on the Event nodes and click "Add call to parent function" button. Then, plug the Event function into the corresponding Parent function.
 
 {{< rawhtml >}}
 <img src="..\images\quick-start\parent-function.png" alt="Create state blueprint" style="width:300px;"/>
@@ -41,17 +41,17 @@ If you don't do this, the base code will not execute, and many issues may occur.
 
 ## Assigning animations
 
-This is all well and good, but without animations being set up, how will you know what your character is doing? So now, it's time to create an Anim Array for 3D characters, or add to the Flipbook Data Map for 2D characters.
+This is all well and good, but without animations being set up, how will you know what your character is doing? So now, it's time to create an Anim Data asset for 3D characters, or add to the Flipbook Data asset for 2D characters.
 
 ### 3D Characters
 
 Within Content/CharacterAssets/Animations/, create a Data Asset by right-clicking in the Content Browser, navigating to Miscellaneous, and clicking Data Asset.
 
 {{< rawhtml >}}
-<img src="..\images\quick-start\anim-array.png" alt="Create Anim Array" style="width:1280px;"/>
+<img src="..\images\quick-start\anim-data.png" alt="Create Anim Data" style="width:1280px;"/>
 {{< /rawhtml >}}
 
-A pop-up will appear asking which class to use for the asset. Select AnimArray.
+A pop-up will appear asking which class to use for the asset. Select AnimData.
 
 {{< rawhtml >}}
 <img src="..\images\quick-start\data-asset.png" alt="Select Data Asset class" style="width:500px;"/>
@@ -59,7 +59,7 @@ A pop-up will appear asking which class to use for the asset. Select AnimArray.
 
 For each animation you wish to use, add an element to the Anim Datas array. Give it a name, and assign the correct animation. The name will be used to call the correct animation from the State blueprints.
 
-Now, create an Anim Blueprint. Be sure to select BaseAnimBP_Standard as the blueprint of choice for non-ArcSystemWorks characters, or BaseAnimBP_ArcSys for ArcSystemWorks characters.
+Now, create an Anim Blueprint. Select the mesh skeleton, and ABP_CommonArcSys as the parent class for ArcSystemWorks characters. A traditional 3D animation template is under construction.
 
 {{< rawhtml >}}
 <img src="..\images\quick-start\anim-blueprint.png" alt="Create Anim Blueprint" style="width:400px;"/>
@@ -69,27 +69,15 @@ Now, create an Anim Blueprint. Be sure to select BaseAnimBP_Standard as the blue
 <img src="..\images\quick-start\animbp-class.png" alt="Select AnimBP Class" style="width:300px;"/>
 {{< /rawhtml >}}
 
-You will need to make a few changes to the new AnimBP before it will work.
-
-Under Class Settings, change the Target Skeleton to that of your character's.
-
-{{< rawhtml >}}
-<img src="..\images\quick-start\target-skeleton.png" alt="Select AnimBP Class" style="width:800px;"/>
-{{< /rawhtml >}}
-
-Under Class Defaults, set Anim Sequence and Prev Anim Sequence to the first Anim Sequence in the Anim Array. Set Anim Name and Prev Anim Name to the first Anim Name in the Anim Array. Finally, set Anim Array to your character's Anim Array.
-
-{{< rawhtml >}}
-<img src="..\images\quick-start\animbp-defaults.png" alt="Set AnimBP Defaults" style="width:800px;"/>
-{{< /rawhtml >}}
-
-The last step is to override the Event Blueprint Initialize Animation function. Create the following node sequence, but cast "Try Get Pawn Owner"'s return value to your character blueprint.
+Under Class Defaults, set Anim Data to your character's Anim Data asset.
 
 {{< rawhtml >}}
 <img src="..\images\quick-start\animbp-override.png" alt="Override AnimBP Initialize" style="width:800px;"/>
 {{< /rawhtml >}}
 
 You may now assign the Anim Blueprint to the mesh in your pawn.
+
+# EVERYTHING BELOW HAS NOT BEEN REWRITTEN YET. PLEASE BE PATIENT.
 
 ### 2D characters
 

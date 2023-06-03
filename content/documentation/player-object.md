@@ -3,6 +3,8 @@ title: "Player Character"
 date: 2023-01-26T01:24:44-08:00
 ---
 
+# UNDERGOING REWRITE
+
 This page will document all blueprint accessible properties and functions exclusive to player characters. For more info, check the [battle actor documentation page]({{< ref "/documentation/battle-actor" >}} ).
 
 ## Variables
