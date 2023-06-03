@@ -18,7 +18,7 @@ To get Night Sky Engine, use a Git client, such as [the official client](https:/
 
 # Compile the engine
 
-To compile the Night Sky Engine, you will need Unreal Engine 5.1 and Visual Studio. The version of Visual Studio must be at least 2019. For detailed instructions on installing Visual Studio for use with Unreal Engine, [click here](https://docs.unrealengine.com/5.3/en-US/setting-up-visual-studio-development-environment-for-cplusplus-projects-in-unreal-engine/).
+To compile the Night Sky Engine, you will need Unreal Engine 5.2 and Visual Studio. The version of Visual Studio must be at least 2019. For detailed instructions on installing Visual Studio for use with Unreal Engine, [click here](https://docs.unrealengine.com/5.3/en-US/setting-up-visual-studio-development-environment-for-cplusplus-projects-in-unreal-engine/).
 
 After Visual Studio is set up, you will need to generate Visual Studio project files for Night Sky Engine. To do so, right-click on FighterEngine.uproject, and click on "Generate Visual Studio project files".
 
