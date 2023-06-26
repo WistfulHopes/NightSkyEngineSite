@@ -1,121 +1,177 @@
 ---
-title: "Battle Actor"
+title: "Battle Object"
 ---
 
-# UNDERGOING REWRITE
-
-This page will document all blueprint accessible properties and functions of battle actors. Battle actors are any gameplay-affecting object that is not a player (such as projectiles), and is the base class for player characters.
+This page will document all blueprint accessible properties and functions of Battle Objects. Battle Objects are any gameplay-affecting object (such as projectiles), and is the base class for Player Objects.
 
 ## Variables
 
-int StateValX (where X is a number from 1 to 8): A "free" value, to be modified per-state/object. Upon exiting the state or an object's destruction, this value will reset to zero.
+int32 PosX: The internal X position; left and right.
 
-int AnimTime: Its intended purpose is to be used with the IsOnFrame function to execute code on the correct frame of the current state. Increments every frame, but can also be manually set. Changing states automatically resets this property to -1.
+int32 PosY: The internal Y position; up and down.
 
-int AnimBPTime: With standard 3D characters, this property sets the frame of the current animation. Increments every frame, but can also be manually set. Changing states automatically resets this property to -1. Unused on 2D or ArcSystemWorks-style characters.
+int32 PosZ: The internal Z position; forward and back.
 
-bool DefaultCommonAction: Some actions, such as dashing and air dashing, can have some parts of their default behavior overridden if this value is set to false. Changing states automatically resets this property to true.
+int32 SpeedX: The internal X speed.
 
-APlayerCharacter* Player: The current player character. If the calling object is not a player, it will be the owning player. If the calling object is a player, it will be a reference to the subclass.
+int32 SpeedY: The internal Y speed.
 
-UMaterial* BoxMaterial: Only used for rendering collision in development or debug builds. In shipping builds, collision cannot be rendered.
+int32 SpeedZ: The internal Z speed.
 
-FString CelName: Used to grab the correct animation and collision data. On 2D characters, it will also grab the sprite based on the last 2 digits. The cel name must end with _XX, where XX is the sprite "number".
+int32 SpeedXRate: Sets the percentage of SpeedX used.
 
-UCollisionData* CollisionData: The collision data asset. 
+int32 SpeedXRatePerFrame: A percentage multiplied against SpeedX every frame.
 
-UNiagaraComponent* LinkedParticle: For non-player actors only. Sets a particle that will move with the object.
+int32 SpeedYRate: Sets the percentage of SpeedY used.
+
+int32 SpeedYRatePerFrame: A percentage multiplied against SpeedY every frame.
+
+int32 SpeedZRate: Sets the percentage of SpeedZ used.
+
+int32 SpeedZRatePerFrame: A percentage multiplied against SpeedZ every frame.
+
+int32 Gravity: The internal gravity.
+
+int32 Inertia: Inertia adds to the position every frame, but also decays every frame until it reaches zero.
+
+int32 GroundHeight: The minimum Y position before the object is considered grounded.
+
+EObjDir Direction: The current direction of the object (facing left or right).
+
+FHitDataCommon HitCommon: Common data for attacks. These values will be used for blocking, normal hit, and counter hit. Values that are set to -1 will be replaced by a default value depending on attack level.
+
+FHitData NormalHit: Hit data for normal hit. Values that are set to -1 will be replaced by a default value depending on attack level.
+
+FHitData CounterHit: Hit data for counter hit. Values that are set to -1 will be replaced by the normal hit's value.
+
+int32 ActionRegX (where X is a number from 1 to 8): Per-action registers. These registers are reset upon player state change. Shared between the player and its child objects.
+
+int32 ObjectRegX (where X is a number from 1 to 8): Per-object registers. These registers are reset upon state change or object destruction. Not shared between the player and its child objects.
+
+int32 ActionTime: How long the current state has been ongoing.
+
+bool GotoLabelActive: If true, attempt to jump to the label set by the GotoLabel() function.
+
+int32 AnimFrame: The current animation frame.
+
+int32 BlendAnimFrame: The current blend animation frame.
+
+float FrameBlendPosition: Used to blend between AnimFrame and BlendAnimFrame in the Anim Blueprint. Set by comparing the current cel time with the max cel time.
+
+int32 CelIndex: The index of the current cel in blueprint.
+
+int32 TimeUntilNextCel: How long until the next cel activates.
+
+int32 MaxCelTime: Max duration of the cel.
+
+FLinearColor MulColor: Internal representation of the MulColor material parameter. Intended to be multiplied against the final color.
+
+FLinearColor AddColor: Internal representation of the AddColor material parameter. Intended to be added to the final color.
+
+FLinearColor MulFadeColor: Depending on MulFadeSpeed, MulColor will fade to this value.
+
+FLinearColor AddFadeColor: Depending on AddFadeSpeed, AddColor will fade to this value.
+
+float MulFadeSpeed: MulColor will lerp to MulFadeColor every frame by this value.
+
+float AddFadeSpeed: AddColor will lerp to AddFadeColor every frame by this value.
+
+FVector ScaleForLink: Linked objects will be scaled to this value.
+
+APlayerObject* Player: A pointer to self as a Player Object. If this object is not a player, it will point to the owning Player Object.
+
+ABattleObject* AttackTarget: The most recently attacked object.
+
+float ScreenSpaceDepthOffset: The material parameter used for depth offset.
+
+float OrthoBlendActive: The material parameter used for orthographic blending.
 
 ## Functions
 
-int GetInternalValue(EInternalValue InternalValue, EObjType ObjType = OBJ_Self): This function gets a value not directly exposed to blueprints. It can grab from itself, the parent player, or the enemy player.
+void InitEventHandler(EEventType EventType, FName FuncName): Initializes an event handler of the event type. When the given event fires, the given function will also activate if it exists in the current state.
 
-bool IsOnFrame(int Frame): Checks if AnimTime is equal to Frame. Use with a Branch node to execute code on the correct AnimTime.
+void RemoveEventHandler(EEventType EventType): Removes the currently active event handler of the event type.
 
-bool IsStopped(): Checks if the object is stopped by super freeze, hitstop, or throw.
+FString GetCelName(): Gets the current cel name.
 
-void SetCelName(FString InCelName): Sets the CelName variable.
+FString GetAnimName(): Gets the current animation name.
 
-void SetHitEffectName(FString InHitEffectName): For custom hit effects, sets the name of the hit effect to be called.
+FString GetBlendAnimName(): Gets the blend animation name.
 
-void SetPosX(int InPosX): Sets x position.
+FString GetLabelName(): Gets the name of the label being jumped to.
 
-void SetPosY(int InPosY): Sets y position.
+void SetCelName(FString InName): Sets the current cel name.
 
-void AddPosX(int InPosX): Adds to the current x position based on the current direction.
+void SetBlendCelName(FString InName): Sets the blend cel name.
 
-void AddPosXRaw(int InPosX): Adds to the current x position with no regard for the current direction.
+void GotoLabel(FString InName, bool ResetState): Attempts to jump to the given label in the state. If ResetState is true, the state will be re-entered, therefore also calling the Init function again.
 
-void AddPosY(int InPosY): adds to the current y position.
+void SetTimeUntilNextCel(int32 Time): Sets the time until the cel ends. 
 
-void SetSpeedX(int InSpeedX): Sets x speed.
+void AddPosXWithDir(int InPosX): Adds X position with respect to current direction. For example, if InPosX is 50000 and the object is facing right, it will add 50000 to PosX. However, the object is facing left, it will subtract 50000 from PosX.
 
-void SetSpeedY(int InSpeedY): Sets y speed.
+void SetSpeedXRaw(int InSpeedX): Sets Speed X with no regard to direction. This will act as if facing right, no matter what.
 
-void AddSpeedX(int InSpeedX): Adds to the current x speed.
+void AddSpeedXRaw(int InSpeedX): Adds Speed X with no regard to direction. This will act as if facing right, no matter what.
 
-void AddSpeedY(int InSpeedY): Adds to the current y speed.
+int32 CalculateDistanceBetweenPoints(EDistanceType Type, EObjType Obj1, EPosType Pos1, EObjType Obj2, EPosType Pos2): Calculates the distance between two points. The method depends on the distance type.
 
-void SetSpeedXPercent(int32 Percent): Multiplies the current x speed by this percent.
+void SetFacing(EObjDir NewDir): Directly sets direction.
 
-void SetSpeedXPercentPerFrame(int32 Percent): Every frame, the current x speed will be multiplied by this percent. Reset on state change.
+void FlipObject(): Flips the object.
 
-void SetGravity(int InGravity): Sets gravity.
+void FaceOpponent(): Makes the object face the opponent.
 
-void SetInertia(int InInertia): Sets inertia. Inertia is a secondary speed value that has friction. In other words, it adds to position every frame in addition to speed, but decreases afterwards.
+bool CheckIsGrounded(): Checks if PosY is less than or equal to ground height.
 
-void ClearInertia(): Sets inertia to zero.
+void EnableHit(bool Enabled): Enables hitting the opponent.
 
-void EnableInertia(): Enables inertia.
+void SetAttacking(bool Attacking): Sets attacking state. While this is true, you can be counter hit, but you can hit the opponent and chain cancel.
 
-void DisableInertia(): Disables inertia.
+void EnableFlip(bool Enabled): Enables facing the opponent by default.
 
-void HaltMomentum(): Stops all momentum, including speed, gravity, and inertia.
+void EnableInertia(): Allows inertia being added to position.
 
-void SetPushWidthExpand(int Expand): The default pushbox width will be increased by the number Expand.
+void DisableInertia(): Disallows inertia being added to position.
 
-void SetFacing(bool NewFacingRight): If NewFacingRight is true, the object will face right; otherwise, the object will face left.
+void HaltMomentum(): Stops all movement, including gravity.
 
-void FlipCharacter(): Flips the character's direction.
+void SetPushCollisionActive(bool Active): Sets push collision being active.
 
-void EnableFlip(bool Enabled): Enables automatic direction flipping.
+void SetPushWidthExtend(int32 Extend): Adds Extend to push width.
 
-void EnableHit(bool Enabled): Enables hitboxes to hit the opponent's hurtboxes. If the function SetAttacking was not used to set attacking to true, this will do nothing.
+void CreateCommonParticle(FString Name, EPosType PosType, FVector Offset, FRotator Rotation): Creates a common particle.
 
-void SetPushCollisionActive(bool Active): Toggles push collision.
+void CreateCharaParticle(FString Name, EPosType PosType, FVector Offset, FRotator Rotation): Creates a character particle.
 
-void SetAttacking(bool Attacking): Enables attacking. While this is true, the object is in counter hit state, but can hit the opponent and chain cancel.
+void LinkCommonParticle(FString Name): Creates a common particle and attaches it to this object. Cannot be used with player objects.
 
-void SetHeadAttribute(bool HeadAttribute): Enables the head attribute on the current move. For use with attacks you want to make anti-airable. 
+void LinkCharaParticle(FString Name): Creates a character particle and attaches it to this object. Cannot be used with player objects.
 
-void SetProjectileAttribute(bool ProjectileAttribute): Enables the projectile attribute on the current move. For use with attacks that projectile invulnerability should ignore. 
+void LinkCommonFlipbook(FString Name): Creates a common flipbook and attaches it to this object. Cannot be used with player objects.
 
-void SetHitEffect(FHitEffect InHitEffect): Sets effects on hit for normal hit.
-
-void SetCounterHitEffect(FHitEffect InHitEffect): Sets effects on hit for counter hit.
-
-void CreateCommonParticle(FString Name, EPosType PosType, FVector Offset = FVector::ZeroVector, FRotator Rotation = FRotator::ZeroRotator): Creates a common particle.
-
-void CreateCharaParticle(FString Name, EPosType PosType, FVector Offset = FVector::ZeroVector, FRotator Rotation = FRotator::ZeroRotator): Creates a particle specific to the current character.
-
-void LinkCharaParticle(FString Name): Creates a character particle and attaches it to the current object. Do not use with player objects.
+void LinkCharaFlipbook(FString Name): Creates a character flipbook and attaches it to this object. Cannot be used with player objects.
 
 void PlayCommonSound(FString Name): Plays a common sound.
 
-void PlayCharaSound(FString Name): Plays a sound specific to the current character.
+void PlayCharaSound(FString Name): Plays a character sound.
 
-void AttachToSocketOfObject(FString InSocketName, FVector Offset, EObjType ObjType): Attaches self to a mesh socket of the given object.
+void AttachToSocketOfObject(FString InSocketName, FVector Offset, EObjType ObjType): Attaches object to a skeletal socket of another object. Visual only.
 
-void DetachFromSocket(): Detaches from the socket given in AttachToSocketOfObject.
+void DetachFromSocket: Detaches object from skeletal socket.
 
-void PauseRoundTimer(bool Pause): Pauses the round timer.
+void SetObjectID(int InObjectID): Sets the object ID. Used to prevent characters from entering a state that spawns an object with this ID while this object is active.
 
-void SetObjectID(int InObjectID): Sets the current object ID. Used in conjunction with a player character state's ObjectID. For example, if you attempt to enter a state while a fireball is on screen, and the fireball's ObjectID is equal to the state's ObjectID, the state cannot be entered.
+ABattleObject* GetBattleObject(EObjType Type): Gets an object by type.
 
-ABattleActor* GetBattleActor(EObjType Type): Gets the specified battle actor if it exists, returns nullptr otherwise.
+ABattleObject* AddCommonBattleObject(FString InStateName, int32 PosXOffset, int32 PosYOffset, EPosType PosType): Adds a common battle object to the game.
 
-void DeactivateIfBeyondBounds(): _Do not use on player characters._ If the object exits the screen bounds, it will be deactivated.
+ABattleObject* AddBattleObject(FString InStateName, int32 PosXOffset, int32 PosYOffset, EPosType PosType): Adds a character battle object to the game.
 
-void DeactivateObject(): _Do not use on player characters._ Deactivates the object.
+void EnableDeactivateIfBeyondBounds(bool Enable): Enables deactivating the object if it exits the stage bounds.
 
-void CollisionView(): Enables viewing the current collision data for this object. Only usable in development or debug builds.
+void EnableDeactivateOnStateChange(bool Enable): Enables deactivating the object if the player changes state.
+
+void EnableDeactivateOnReceiveHit(bool Enable): Enables deactivating the object if the player gets hit or blocks.
+
+void DeactivateObject(): Cannot be used on player objects. Deactivates the object and returns it to the pool.

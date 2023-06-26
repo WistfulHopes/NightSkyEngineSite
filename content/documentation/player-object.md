@@ -1,5 +1,5 @@
 ---
-title: "Player Character"
+title: "Player Object"
 ---
 
 # UNDERGOING REWRITE

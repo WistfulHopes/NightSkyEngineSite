@@ -15,7 +15,7 @@ Night Sky Engine uses high-level scripting provided by Unreal's Blueprint system
 
 ## What are some key features of Night Sky Engine?
 
-Using the Blueprint system and exposed native functions, Night Sky Engine allows for very in-depth control of character states. States are event-driven with many callback functions, and those functions can be extended to add movement, control frame data, create timers, and more.
+Using the Blueprint system and exposed native functions, Night Sky Engine allows for very in-depth control of character states. States are quite robust, allowing extension to add movement, control frame data, create timers, and more.
 
 Night Sky Engine also allows for both 2D sprite-based characters and 3D characters. As an added bonus, there's support for both traditionally animated 3D characters, and Arc System Works-like animated 3D characters.
 
